@@ -1,0 +1,71 @@
+<Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{C1B290C6-4DE5-4C64-A0F7-ABCDEF123456}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>SmartPlanner</RootNamespace>
+    <AssemblyName>SmartPlanner</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <StartupObject>SmartPlanner.App</StartupObject>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="WindowsBase" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="Microsoft.CSharp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="App.xaml" />
+    <Page Include="MainWindow.xaml" />
+    <Page Include="Pages\TaskInputPage.xaml" />
+    <Page Include="Pages\VisualSchedulePage.xaml" />
+    <Page Include="Windows\AlarmWindow.xaml" />
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MainWindow.xaml.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\TaskInputPage.xaml.cs">
+      <DependentUpon>TaskInputPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\VisualSchedulePage.xaml.cs">
+      <DependentUpon>VisualSchedulePage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\AlarmWindow.xaml.cs">
+      <DependentUpon>AlarmWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewModels\AppViewModel.cs" />
+    <Compile Include="ViewModels\TaskManagerViewModel.cs" />
+    <Compile Include="ViewModels\TaskInputViewModel.cs" />
+    <Compile Include="ViewModels\RelayCommand.cs" />
+    <Compile Include="Models\TaskItem.cs" />
+    <Compile Include="Models\PriorityLevel.cs" />
+    <Compile Include="Converters\PriorityToBrushConverter.cs" />
+    <Compile Include="Converters\BoolToBrushConverter.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+</Project>
