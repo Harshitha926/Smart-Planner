@@ -64,30 +64,30 @@
             <Setter Property="SnapsToDevicePixels" Value="True" />
         </Style>
     </Window.Resources>
-    <Grid>
+    <Grid Background="{StaticResource MainBackgroundGradient}">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="240" />
+            <ColumnDefinition Width="280" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
         <!-- Sidebar -->
-        <Border Grid.Column="0" Background="#FF111827" Padding="20">
+        <Border Grid.Column="0" Background="#FF0F172A" Padding="24" CornerRadius="0,0,24,0" SnapsToDevicePixels="True">
             <StackPanel>
-                <TextBlock Text="Smart Planner" FontSize="24" FontFamily="Segoe UI Semibold" Foreground="#FFF9FAFB" Margin="0,0,0,20" />
-                <Button Style="{StaticResource NavigationButton}" Content="📝 Task Input" Click="TaskInputButton_Click" />
-                <Button Style="{StaticResource NavigationButton}" Content="📅 Schedule View" Click="VisualScheduleButton_Click" />
+                <TextBlock Text="Smart Planner" FontSize="28" FontFamily="Segoe UI Semibold" Foreground="#FFF9FAFB" Margin="0,0,0,24" />
+                <Button x:Name="TaskInputNavButton" Style="{StaticResource NavigationButton}" Content="📝  Task Input" Click="TaskInputButton_Click" />
+                <Button x:Name="ScheduleNavButton" Style="{StaticResource NavigationButton}" Content="📅  Schedule View" Click="VisualScheduleButton_Click" />
 
                 <Border Style="{StaticResource SidebarCard}">
                     <StackPanel>
-                        <TextBlock Text="Progress" FontSize="16" FontWeight="SemiBold" Foreground="#FFF9FAFB" Margin="0,0,0,12" />
-                        <ProgressBar Value="{Binding TaskManager.ProgressPercentage}" Height="8" Background="#FF4B5563" Foreground="#FF10B981" />
-                        <TextBlock Text="{Binding TaskManager.ProgressText}" FontSize="12" Foreground="#FF9CA3AF" Margin="0,8,0,0" />
+                        <TextBlock Text="Progress" FontSize="16" FontWeight="SemiBold" Foreground="#FFF9FAFB" Margin="0,0,0,14" />
+                        <ProgressBar Value="{Binding TaskManager.ProgressPercentage}" Height="10" Background="#FF1F2937" Foreground="#FF10B981" />
+                        <TextBlock Text="{Binding TaskManager.ProgressText}" FontSize="12" Foreground="#FF9CA3AF" Margin="0,12,0,0" />
                     </StackPanel>
                 </Border>
 
                 <Border Style="{StaticResource SidebarCard}">
                     <StackPanel>
-                        <TextBlock Text="Active Task" FontSize="16" FontWeight="SemiBold" Foreground="#FFF9FAFB" Margin="0,0,0,8" />
+                        <TextBlock Text="Active Task" FontSize="16" FontWeight="SemiBold" Foreground="#FFF9FAFB" Margin="0,0,0,10" />
                         <TextBlock Text="{Binding TaskManager.ActiveTask.Name, TargetNullValue='No active task'}" FontSize="14" Foreground="#FF60A5FA" TextWrapping="Wrap" />
                     </StackPanel>
                 </Border>
@@ -95,24 +95,25 @@
         </Border>
 
         <!-- Main Content -->
-        <Grid Grid.Column="1">
+        <Grid Grid.Column="1" Margin="-20,0,0,0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
-            <Border Grid.Row="0" Background="#FF374151" Padding="20" CornerRadius="0,20,0,0">
-                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                    <TextBlock Text="Dashboard" FontSize="28" FontFamily="Segoe UI Semibold" Foreground="#FFF9FAFB" />
+            <Border Grid.Row="0" Background="#FF111827" Padding="24" CornerRadius="0,0,24,0" Margin="0,0,0,16" SnapsToDevicePixels="True">
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Spacing="12">
+                    <TextBlock Text="Dashboard" FontSize="30" FontFamily="Segoe UI Semibold" Foreground="#FFF9FAFB" />
+                    <TextBlock Text="— modern planning for your day" FontSize="16" Foreground="#FF9CA3AF" VerticalAlignment="Bottom" />
                 </StackPanel>
             </Border>
 
-            <Frame x:Name="MainFrame" Grid.Row="1" NavigationUIVisibility="Hidden" Background="#FF1F2937" Opacity="0">
+            <Frame x:Name="MainFrame" Grid.Row="1" NavigationUIVisibility="Hidden" Background="Transparent" Opacity="0">
                 <Frame.Triggers>
                     <EventTrigger RoutedEvent="Frame.LoadCompleted">
                         <BeginStoryboard>
                             <Storyboard>
-                                <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.3" />
+                                <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.35" />
                             </Storyboard>
                         </BeginStoryboard>
                     </EventTrigger>
