@@ -1,6 +1,5 @@
 using System;
 using System.Linq;
-using System.Media;
 using System.Windows;
 using System.Windows.Threading;
 using SmartPlanner.Models;
@@ -54,8 +53,6 @@ namespace SmartPlanner
 
         private void ShowAlarm(TaskItem task)
         {
-            SystemSounds.Exclamation.Play();
-
             var alarmWindow = new Windows.AlarmWindow(task)
             {
                 Owner = this

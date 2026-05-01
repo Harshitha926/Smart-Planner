@@ -8,5 +8,7 @@
         <vm:AppViewModel x:Key="AppViewModel" />
         <conv:PriorityToBrushConverter x:Key="PriorityToBrushConverter" />
         <conv:BoolToBrushConverter x:Key="BoolToBrushConverter" />
+        <conv:CompletedTasksConverter x:Key="CompletedTasksConverter" />
+        <conv:RemainingTasksConverter x:Key="RemainingTasksConverter" />
     </Application.Resources>
 </Application>

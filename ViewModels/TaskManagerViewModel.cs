@@ -13,6 +13,8 @@ namespace SmartPlanner.ViewModels
         public ICollectionView TasksView { get; }
 
         private TaskItem _activeTask;
+        private DateTime _scheduleStartTime = new DateTime(DateTime.Today.Year, DateTime.Today.Month, DateTime.Today.Day, 8, 0, 0); // Default 8 AM
+
         public TaskItem ActiveTask
         {
             get => _activeTask;
@@ -28,12 +30,29 @@ namespace SmartPlanner.ViewModels
             }
         }
 
+        public DateTime ScheduleStartTime
+        {
+            get => _scheduleStartTime;
+            set
+            {
+                if (_scheduleStartTime == value) return;
+                _scheduleStartTime = value;
+                OnPropertyChanged(nameof(ScheduleStartTime));
+            }
+        }
+
+        public double ProgressPercentage => Tasks.Count > 0 ? (double)Tasks.Count(t => t.IsCompleted) / Tasks.Count * 100 : 0;
+
+        public string ProgressText => $"{Tasks.Count(t => t.IsCompleted)} / {Tasks.Count} tasks completed";
+
         public TaskManagerViewModel()
         {
             Tasks = new ObservableCollection<TaskItem>();
             TasksView = CollectionViewSource.GetDefaultView(Tasks);
             TasksView.SortDescriptions.Add(new SortDescription(nameof(TaskItem.Time), ListSortDirection.Ascending));
             TasksView.SortDescriptions.Add(new SortDescription(nameof(TaskItem.PriorityOrder), ListSortDirection.Ascending));
+
+            Tasks.CollectionChanged += (s, e) => OnPropertyChanged(nameof(ProgressPercentage));
         }
 
         public void AddTask(string name, DateTime time, int duration, PriorityLevel priority)
@@ -58,34 +77,22 @@ namespace SmartPlanner.ViewModels
 
         public void GenerateSchedule()
         {
-            var sorted = Tasks.OrderBy(item => item.Time).ThenBy(item => item.PriorityOrder).ToList();
+            var sorted = Tasks
+                .Where(t => !t.IsCompleted)
+                .OrderBy(item => item.PriorityOrder)
+                .ThenBy(item => item.DurationMinutes)
+                .ToList();
+
             if (!sorted.Any())
             {
                 return;
             }
 
-            DateTime earliest = sorted.First().Time;
-            if (earliest.TimeOfDay < TimeSpan.Zero)
-            {
-                earliest = DateTime.Today;
-            }
-
-            DateTime currentEnd = sorted[0].Time;
-            for (var index = 1; index < sorted.Count; index++)
-            {
-                var next = sorted[index];
-                if (next.Time < currentEnd)
-                {
-                    next.Time = currentEnd;
-                }
-
-                currentEnd = next.EndTime;
-            }
-
-            Tasks.Clear();
+            DateTime currentTime = ScheduleStartTime;
             foreach (var task in sorted)
             {
-                Tasks.Add(task);
+                task.Time = currentTime;
+                currentTime = task.EndTime;
             }
 
             RefreshScheduleView();
@@ -94,13 +101,22 @@ namespace SmartPlanner.ViewModels
 
         public void RefreshActiveTask(DateTime now)
         {
-            var active = Tasks.FirstOrDefault(task => now >= task.Time && now < task.EndTime);
+            var active = Tasks.FirstOrDefault(task => !task.IsCompleted && now >= task.Time && now < task.EndTime);
             foreach (var task in Tasks)
             {
                 task.IsActive = task == active;
             }
 
             ActiveTask = active;
+        }
+
+        public void MarkTaskCompleted(TaskItem task)
+        {
+            if (task == null) return;
+            task.IsCompleted = true;
+            OnPropertyChanged(nameof(ProgressPercentage));
+            OnPropertyChanged(nameof(ProgressText));
+            RefreshActiveTask(DateTime.Now);
         }
 
         public void SnoozeTask(TaskItem task)

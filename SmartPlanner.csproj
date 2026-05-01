@@ -66,6 +66,7 @@
     <Compile Include="Models\PriorityLevel.cs" />
     <Compile Include="Converters\PriorityToBrushConverter.cs" />
     <Compile Include="Converters\BoolToBrushConverter.cs" />
+    <Compile Include="Converters\TaskCountConverters.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
 </Project>

@@ -10,6 +10,7 @@ namespace SmartPlanner.Models
         private int _durationMinutes;
         private PriorityLevel _priority;
         private bool _isActive;
+        private bool _isCompleted;
 
         public string Name
         {
@@ -71,6 +72,17 @@ namespace SmartPlanner.Models
             }
         }
 
+        public bool IsCompleted
+        {
+            get => _isCompleted;
+            set
+            {
+                if (_isCompleted == value) return;
+                _isCompleted = value;
+                OnPropertyChanged(nameof(IsCompleted));
+            }
+        }
+
         public DateTime EndTime => Time.AddMinutes(DurationMinutes);
 
         public int PriorityOrder => Priority switch
@@ -92,6 +104,7 @@ namespace SmartPlanner.Models
             _durationMinutes = durationMinutes;
             _priority = priority;
             _isActive = false;
+            _isCompleted = false;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

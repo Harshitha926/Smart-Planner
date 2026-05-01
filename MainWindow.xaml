@@ -5,7 +5,7 @@
         Height="740"
         Width="1120"
         WindowStartupLocation="CenterScreen"
-        Background="#FFF2F4F7">
+        Background="#FF1F2937">
     <Window.Resources>
         <Style TargetType="Button">
             <Setter Property="FontFamily" Value="Segoe UI" />
@@ -24,52 +24,100 @@
                         <Border Background="{TemplateBinding Background}" CornerRadius="12" Padding="{TemplateBinding Padding}">
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                         </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#FF2563EB" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
         </Style>
         <Style x:Key="NavigationButton" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
-            <Setter Property="Background" Value="#FF4F46E5" />
-            <Setter Property="Width" Value="160" />
+            <Setter Property="Background" Value="#FF374151" />
+            <Setter Property="Width" Value="200" />
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+            <Setter Property="Margin" Value="0,4" />
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#FF4B5563" />
+                </Trigger>
+            </Style.Triggers>
         </Style>
         <Style x:Key="CardBorder" TargetType="Border">
             <Setter Property="CornerRadius" Value="18" />
-            <Setter Property="Background" Value="White" />
+            <Setter Property="Background" Value="#FF374151" />
             <Setter Property="Padding" Value="22" />
             <Setter Property="Margin" Value="0,0,0,20" />
             <Setter Property="SnapsToDevicePixels" Value="True" />
             <Setter Property="Effect">
                 <Setter.Value>
-                    <DropShadowEffect Color="#33000000" BlurRadius="18" ShadowDepth="4" Opacity="0.12" />
+                    <DropShadowEffect Color="#000000" BlurRadius="18" ShadowDepth="4" Opacity="0.3" />
                 </Setter.Value>
             </Setter>
         </Style>
+        <Style x:Key="SidebarCard" TargetType="Border">
+            <Setter Property="CornerRadius" Value="12" />
+            <Setter Property="Background" Value="#FF374151" />
+            <Setter Property="Padding" Value="16" />
+            <Setter Property="Margin" Value="0,0,0,16" />
+            <Setter Property="SnapsToDevicePixels" Value="True" />
+        </Style>
     </Window.Resources>
-    <DockPanel LastChildFill="True">
-        <Border DockPanel.Dock="Top" Background="White" Padding="20" CornerRadius="0,0,20,20">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                    <Button Style="{StaticResource NavigationButton}" Content="Task Input" Click="TaskInputButton_Click" />
-                    <Button Style="{StaticResource NavigationButton}" Content="Visual Schedule" Click="VisualScheduleButton_Click" />
-                </StackPanel>
-                <StackPanel Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
-                    <TextBlock Text="Smart Planner" FontSize="28" FontFamily="Segoe UI Semibold" Foreground="#FF111827" />
-                    <TextBlock Text="Manage tasks, build a daily schedule, and get live reminders." FontSize="14" Foreground="#FF6B7280" />
-                </StackPanel>
-                <Border Grid.Column="2" Style="{StaticResource CardBorder}" Background="#FFF8FAFF" Width="180" HorizontalAlignment="Right">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="240" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <!-- Sidebar -->
+        <Border Grid.Column="0" Background="#FF111827" Padding="20">
+            <StackPanel>
+                <TextBlock Text="Smart Planner" FontSize="24" FontFamily="Segoe UI Semibold" Foreground="#FFF9FAFB" Margin="0,0,0,20" />
+                <Button Style="{StaticResource NavigationButton}" Content="📝 Task Input" Click="TaskInputButton_Click" />
+                <Button Style="{StaticResource NavigationButton}" Content="📅 Schedule View" Click="VisualScheduleButton_Click" />
+
+                <Border Style="{StaticResource SidebarCard}">
                     <StackPanel>
-                        <TextBlock Text="Active Tasks" FontSize="12" Foreground="#FF6B7280" />
-                        <TextBlock Text="{Binding TaskManager.Tasks.Count}" FontSize="24" FontWeight="Bold" Foreground="#FF111827" Margin="0,8,0,0" />
-                        <TextBlock Text="Total tasks in the list" FontSize="12" Foreground="#FF9CA3AF" />
+                        <TextBlock Text="Progress" FontSize="16" FontWeight="SemiBold" Foreground="#FFF9FAFB" Margin="0,0,0,12" />
+                        <ProgressBar Value="{Binding TaskManager.ProgressPercentage}" Height="8" Background="#FF4B5563" Foreground="#FF10B981" />
+                        <TextBlock Text="{Binding TaskManager.ProgressText}" FontSize="12" Foreground="#FF9CA3AF" Margin="0,8,0,0" />
                     </StackPanel>
                 </Border>
-            </Grid>
+
+                <Border Style="{StaticResource SidebarCard}">
+                    <StackPanel>
+                        <TextBlock Text="Active Task" FontSize="16" FontWeight="SemiBold" Foreground="#FFF9FAFB" Margin="0,0,0,8" />
+                        <TextBlock Text="{Binding TaskManager.ActiveTask.Name, TargetNullValue='No active task'}" FontSize="14" Foreground="#FF60A5FA" TextWrapping="Wrap" />
+                    </StackPanel>
+                </Border>
+            </StackPanel>
         </Border>
-        <Frame x:Name="MainFrame" NavigationUIVisibility="Hidden" Background="#FFF2F4F7" />
-    </DockPanel>
+
+        <!-- Main Content -->
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <Border Grid.Row="0" Background="#FF374151" Padding="20" CornerRadius="0,20,0,0">
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock Text="Dashboard" FontSize="28" FontFamily="Segoe UI Semibold" Foreground="#FFF9FAFB" />
+                </StackPanel>
+            </Border>
+
+            <Frame x:Name="MainFrame" Grid.Row="1" NavigationUIVisibility="Hidden" Background="#FF1F2937" Opacity="0">
+                <Frame.Triggers>
+                    <EventTrigger RoutedEvent="Frame.LoadCompleted">
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.3" />
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger>
+                </Frame.Triggers>
+            </Frame>
+        </Grid>
+    </Grid>
 </Window>

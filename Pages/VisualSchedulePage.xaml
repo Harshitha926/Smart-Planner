@@ -12,69 +12,120 @@
         </CollectionViewSource>
 
         <Style x:Key="TaskCard" TargetType="Border">
-            <Setter Property="Background" Value="White" />
+            <Setter Property="Background" Value="#FF374151" />
             <Setter Property="CornerRadius" Value="18" />
             <Setter Property="Padding" Value="18" />
             <Setter Property="Margin" Value="0,0,0,18" />
-            <Setter Property="BorderBrush" Value="#FFE5E7EB" />
+            <Setter Property="BorderBrush" Value="#FF4B5563" />
             <Setter Property="BorderThickness" Value="1" />
             <Setter Property="Effect">
                 <Setter.Value>
-                    <DropShadowEffect Color="#22000000" BlurRadius="14" ShadowDepth="4" Opacity="0.12" />
+                    <DropShadowEffect Color="#000000" BlurRadius="14" ShadowDepth="4" Opacity="0.3" />
                 </Setter.Value>
             </Setter>
             <Style.Triggers>
                 <DataTrigger Binding="{Binding IsActive}" Value="True">
-                    <Setter Property="Background" Value="#FFFFF3F2" />
-                    <Setter Property="BorderBrush" Value="#FFFECACA" />
+                    <Setter Property="Background" Value="#FF1F2937" />
+                    <Setter Property="BorderBrush" Value="#FF3B82F6" />
+                    <Setter Property="BorderThickness" Value="2" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding IsCompleted}" Value="True">
+                    <Setter Property="Opacity" Value="0.6" />
                 </DataTrigger>
             </Style.Triggers>
         </Style>
+        <Style x:Key="TimeBlock" TargetType="Border">
+            <Setter Property="Background" Value="#FF4B5563" />
+            <Setter Property="CornerRadius" Value="8" />
+            <Setter Property="Padding" Value="12" />
+            <Setter Property="Margin" Value="0,0,0,8" />
+            <Setter Property="MinHeight" Value="60" />
+        </Style>
     </Page.Resources>
 
-    <Grid Background="#FFF2F4F7" Padding="24">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
+    <ScrollViewer Background="#FF1F2937" Padding="24">
+        <StackPanel>
+            <TextBlock Text="Visual Schedule" FontSize="28" FontFamily="Segoe UI Semibold" Foreground="#FFF9FAFB" Margin="0,0,0,16" />
 
-        <Border Background="White" CornerRadius="18" Padding="20" Margin="0,0,0,20">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-                <StackPanel>
-                    <TextBlock Text="Visual Schedule" FontSize="28" FontFamily="Segoe UI Semibold" Foreground="#FF111827" />
-                    <TextBlock Text="Review your daily timeline with color-coded priorities and active task highlights." FontSize="14" Foreground="#FF6B7280" Margin="0,4,0,0" />
-                </StackPanel>
-                <StackPanel Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center">
-                    <TextBlock Text="Current Task" FontSize="12" Foreground="#FF6B7280" />
-                    <TextBlock Text="{Binding TaskManager.ActiveTask.Name, TargetNullValue='No active task'}" FontSize="18" FontWeight="SemiBold" Foreground="#FF111827" />
-                </StackPanel>
-            </Grid>
-        </Border>
+            <Border Background="#FF374151" CornerRadius="18" Padding="20" Margin="0,0,0,20">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel>
+                        <TextBlock Text="Daily Timeline" FontSize="24" FontFamily="Segoe UI Semibold" Foreground="#FFF9FAFB" />
+                        <TextBlock Text="Review your scheduled tasks with priority-based coloring." FontSize="14" Foreground="#FF9CA3AF" Margin="0,4,0,0" />
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center">
+                        <TextBlock Text="Schedule Start Time" FontSize="12" Foreground="#FF9CA3AF" />
+                        <TextBlock Text="{Binding TaskManager.ScheduleStartTime, StringFormat='{}{0:hh:mm tt}'}" FontSize="18" FontWeight="SemiBold" Foreground="#FF60A5FA" />
+                    </StackPanel>
+                </Grid>
+            </Border>
 
-        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
             <ItemsControl ItemsSource="{Binding Source={StaticResource SortedTasks}}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <Border Style="{StaticResource TaskCard}">
-                            <Grid ColumnDefinitions="10,*,130" VerticalAlignment="Center">
-                                <Border Grid.Column="0" Background="{Binding Priority, Converter={StaticResource PriorityToBrushConverter}}" Width="10" CornerRadius="5" />
-                                <StackPanel Grid.Column="1" Margin="16,0,0,0">
-                                    <TextBlock Text="{Binding DisplayTime}" FontSize="16" FontWeight="Bold" Foreground="#FF111827" />
-                                    <TextBlock Text="{Binding Name}" FontSize="16" FontWeight="SemiBold" Margin="0,4,0,2" />
-                                    <TextBlock Text="{Binding DurationLabel}" Foreground="#FF6B7280" />
-                                </StackPanel>
-                                <Border Grid.Column="2" Background="#FFF8FAFF" CornerRadius="12" Padding="10" HorizontalAlignment="Right" VerticalAlignment="Center">
-                                    <TextBlock Text="{Binding PriorityLabel}" Foreground="{Binding Priority, Converter={StaticResource PriorityToBrushConverter}}" FontWeight="Bold" HorizontalAlignment="Center" />
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="120" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="120" />
+                                    <ColumnDefinition Width="120" />
+                                </Grid.ColumnDefinitions>
+
+                                <Border Grid.Column="0" Style="{StaticResource TimeBlock}" Background="{Binding Priority, Converter={StaticResource PriorityToBrushConverter}}">
+                                    <StackPanel VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding DisplayTime}" FontSize="16" FontWeight="Bold" Foreground="White" />
+                                        <TextBlock Text="{Binding DurationLabel}" FontSize="12" Foreground="#FFE5E7EB" />
+                                    </StackPanel>
                                 </Border>
+
+                                <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="20,0,0,0">
+                                    <TextBlock Text="{Binding Name}" FontSize="18" FontWeight="SemiBold" Foreground="#FFF9FAFB" />
+                                    <TextBlock Text="{Binding PriorityLabel} Priority" FontSize="14" Foreground="{Binding Priority, Converter={StaticResource PriorityToBrushConverter}}" />
+                                </StackPanel>
+
+                                <Border Grid.Column="2" Background="#FF4B5563" CornerRadius="12" Padding="10" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <TextBlock Text="{Binding PriorityLabel}" Foreground="{Binding Priority, Converter={StaticResource PriorityToBrushConverter}}" FontWeight="Bold" />
+                                </Border>
+
+                                <StackPanel Grid.Column="3" VerticalAlignment="Center" Orientation="Horizontal">
+                                    <TextBlock Text="⏰" FontSize="16" Margin="0,0,8,0" />
+                                    <TextBlock Text="{Binding IsActive, Converter={StaticResource BoolToBrushConverter}}" FontSize="14" Foreground="#FF60A5FA" />
+                                </StackPanel>
                             </Grid>
                         </Border>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
-        </ScrollViewer>
-    </Grid>
+
+            <Border Background="#FF374151" CornerRadius="18" Padding="20" Margin="0,20,0,0">
+                <StackPanel>
+                    <TextBlock Text="Schedule Summary" FontSize="20" FontWeight="SemiBold" Foreground="#FFF9FAFB" Margin="0,0,0,12" />
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel>
+                            <TextBlock Text="Total Tasks" FontSize="14" Foreground="#FF9CA3AF" />
+                            <TextBlock Text="{Binding TaskManager.Tasks.Count}" FontSize="24" FontWeight="Bold" Foreground="#FFF9FAFB" />
+                        </StackPanel>
+                        <StackPanel Grid.Column="1">
+                            <TextBlock Text="Completed" FontSize="14" Foreground="#FF9CA3AF" />
+                            <TextBlock Text="{Binding TaskManager.Tasks, Converter={StaticResource CompletedTasksConverter}}" FontSize="24" FontWeight="Bold" Foreground="#FF10B981" />
+                        </StackPanel>
+                        <StackPanel Grid.Column="2">
+                            <TextBlock Text="Remaining" FontSize="14" Foreground="#FF9CA3AF" />
+                            <TextBlock Text="{Binding TaskManager.Tasks, Converter={StaticResource RemainingTasksConverter}}" FontSize="24" FontWeight="Bold" Foreground="#FFF59E0B" />
+                        </StackPanel>
+                    </Grid>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
 </Page>

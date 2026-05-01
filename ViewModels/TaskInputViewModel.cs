@@ -14,13 +14,20 @@ namespace SmartPlanner.ViewModels
         private string _newTaskTimeText;
         private int _newTaskDuration;
         private string _selectedPriority;
+        private string _filterPriority;
+        private string _sortBy;
 
         public TaskManagerViewModel TaskManager { get; }
         public ObservableCollection<TaskItem> Tasks => TaskManager.Tasks;
         public ObservableCollection<string> PriorityOptions { get; }
+        public ObservableCollection<string> FilterOptions { get; }
+        public ObservableCollection<string> SortOptions { get; }
         public ICommand AddTaskCommand { get; }
         public ICommand RemoveTaskCommand { get; }
+        public ICommand MarkCompletedCommand { get; }
         public ICommand GenerateScheduleCommand { get; }
+        public ICommand ApplyFilterCommand { get; }
+        public ICommand ApplySortCommand { get; }
 
         public string NewTaskName
         {
@@ -77,18 +84,49 @@ namespace SmartPlanner.ViewModels
             }
         }
 
+        public string FilterPriority
+        {
+            get => _filterPriority;
+            set
+            {
+                if (_filterPriority == value) return;
+                _filterPriority = value;
+                OnPropertyChanged(nameof(FilterPriority));
+                ApplyFilter();
+            }
+        }
+
+        public string SortBy
+        {
+            get => _sortBy;
+            set
+            {
+                if (_sortBy == value) return;
+                _sortBy = value;
+                OnPropertyChanged(nameof(SortBy));
+                ApplySort();
+            }
+        }
+
         public TaskInputViewModel(TaskManagerViewModel taskManager)
         {
             TaskManager = taskManager;
             PriorityOptions = new ObservableCollection<string> { "High", "Medium", "Low" };
+            FilterOptions = new ObservableCollection<string> { "All", "High", "Medium", "Low" };
+            SortOptions = new ObservableCollection<string> { "Time", "Priority", "Completion" };
             AddTaskCommand = new RelayCommand(_ => AddTask());
             RemoveTaskCommand = new RelayCommand(param => RemoveTask(param as TaskItem));
+            MarkCompletedCommand = new RelayCommand(param => MarkCompleted(param as TaskItem));
             GenerateScheduleCommand = new RelayCommand(_ => GenerateSchedule());
+            ApplyFilterCommand = new RelayCommand(_ => ApplyFilter());
+            ApplySortCommand = new RelayCommand(_ => ApplySort());
 
             NewTaskDate = DateTime.Today;
             NewTaskTimeText = DateTime.Now.ToString("HH:mm");
             NewTaskDuration = 30;
             SelectedPriority = "Medium";
+            FilterPriority = "All";
+            SortBy = "Time";
         }
 
         public void AddTask()
@@ -133,6 +171,38 @@ namespace SmartPlanner.ViewModels
         public void RemoveTask(TaskItem task)
         {
             TaskManager.RemoveTask(task);
+        }
+
+        public void MarkCompleted(TaskItem task)
+        {
+            TaskManager.MarkTaskCompleted(task);
+        }
+
+        public void ApplyFilter()
+        {
+            TaskManager.TasksView.Filter = task =>
+            {
+                var t = task as TaskItem;
+                return FilterPriority == "All" || t.Priority.ToString() == FilterPriority;
+            };
+        }
+
+        public void ApplySort()
+        {
+            TaskManager.TasksView.SortDescriptions.Clear();
+            switch (SortBy)
+            {
+                case "Time":
+                    TaskManager.TasksView.SortDescriptions.Add(new System.ComponentModel.SortDescription(nameof(TaskItem.Time), System.ComponentModel.ListSortDirection.Ascending));
+                    break;
+                case "Priority":
+                    TaskManager.TasksView.SortDescriptions.Add(new System.ComponentModel.SortDescription(nameof(TaskItem.PriorityOrder), System.ComponentModel.ListSortDirection.Ascending));
+                    break;
+                case "Completion":
+                    TaskManager.TasksView.SortDescriptions.Add(new System.ComponentModel.SortDescription(nameof(TaskItem.IsCompleted), System.ComponentModel.ListSortDirection.Ascending));
+                    TaskManager.TasksView.SortDescriptions.Add(new System.ComponentModel.SortDescription(nameof(TaskItem.Time), System.ComponentModel.ListSortDirection.Ascending));
+                    break;
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
